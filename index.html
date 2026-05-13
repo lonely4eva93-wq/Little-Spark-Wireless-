@@ -24,7 +24,15 @@
   <div class="card">
     <h2>Owner Panel</h2>
     <p>Status: Prototype Online</p>
-    <button id="saveLeadBtn">Save Lead</button>
+    <div class="inputRow">
+      <input id="ownerPinInput" type="password" placeholder="Owner PIN" />
+      <button id="ownerLoginBtn">Unlock</button>
+    </div>
+    <div id="ownerTools" class="ownerTools hidden">
+      <p>Owner mode unlocked.</p>
+      <button id="saveLeadBtn">Save Lead</button>
+      <button id="clearMessagesBtn">Clear Messages</button>
+    </div>
   </div>
 </div>
 
