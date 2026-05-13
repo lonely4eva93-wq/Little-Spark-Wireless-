@@ -16,7 +16,7 @@
     <div>
       <p class="eyebrow">AI assisted wireless concierge</p>
       <h1>Phone service with a little spark.</h1>
-      <p class="tagline">A premium demo for plans, support, owner tools, AI chat, lead capture, and future eSIM provider hooks.</p>
+      <p class="tagline">A premium demo for plans, support, owner tools, AI chat, lead capture, security operations, cash-out tracking, and future eSIM provider hooks.</p>
       <div class="actions">
         <a href="#plans" class="button primary">View Plans</a>
         <a href="#signup" class="button ghost">Join Waitlist</a>
@@ -37,19 +37,19 @@
       <h2>Spark Start</h2>
       <p class="price">$25/mo</p>
       <p>Starter talk, text, and data concept plan.</p>
-      <button class="choosePlan" data-plan="Spark Start">Choose</button>
+      <button class="choosePlan" data-plan="Spark Start" data-price="25">Choose</button>
     </article>
     <article class="card plan featured">
       <h2>Spark Plus</h2>
       <p class="price">$45/mo</p>
       <p>Premium support, AI setup guide, and future eSIM activation.</p>
-      <button class="choosePlan" data-plan="Spark Plus">Choose</button>
+      <button class="choosePlan" data-plan="Spark Plus" data-price="45">Choose</button>
     </article>
     <article class="card plan">
       <h2>Spark Max</h2>
       <p class="price">$65/mo</p>
       <p>Power-user concept plan with concierge support.</p>
-      <button class="choosePlan" data-plan="Spark Max">Choose</button>
+      <button class="choosePlan" data-plan="Spark Max" data-price="65">Choose</button>
     </article>
   </section>
 
@@ -89,7 +89,7 @@
     <p>Status: Prototype Online</p>
     <div class="inputRow">
       <input id="ownerPinInput" type="password" placeholder="Owner PIN" />
-      <button id="ownerLoginBtn">Unlock</button>
+      <button id="ownerLoginBtn">Unlock Owner</button>
     </div>
     <div id="ownerTools" class="ownerTools hidden">
       <div class="stats">
@@ -97,10 +97,42 @@
         <div><strong id="messageCount">0</strong><span>Messages</span></div>
         <div><strong id="ticketCount">0</strong><span>Tickets</span></div>
         <div><strong id="selectedPlan">None</strong><span>Selected Plan</span></div>
+        <div><strong id="grossRevenue">$0</strong><span>Gross Demo Revenue</span></div>
+        <div><strong id="houseFees">$0</strong><span>House Fees</span></div>
+        <div><strong id="cashoutTotal">$0</strong><span>Cash-Out Requested</span></div>
+        <div><strong id="riskScore">Low</strong><span>Risk Level</span></div>
       </div>
-      <button id="saveLeadBtn">Save Lead</button>
-      <button id="clearMessagesBtn">Clear Messages</button>
-      <button id="clearAllBtn" class="danger">Factory Reset Demo</button>
+      <div class="grid two">
+        <div>
+          <h3>Owner Cash-Out</h3>
+          <input id="cashoutAmountInput" type="number" min="1" placeholder="Amount to cash out" />
+          <input id="cashoutMethodInput" type="text" placeholder="Method: PayPal, Cash App, Bank" />
+          <button id="cashoutBtn">Request Cash-Out</button>
+          <div id="cashoutList" class="list"></div>
+        </div>
+        <div>
+          <h3>Owner Actions</h3>
+          <button id="saveLeadBtn">Save Lead</button>
+          <button id="simulateSaleBtn">Simulate Plan Sale</button>
+          <button id="clearMessagesBtn">Clear Messages</button>
+          <button id="clearAllBtn" class="danger">Factory Reset Demo</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Security Team Login</h2>
+    <p>Prototype security console for fraud review, threat notes, and locked account tracking.</p>
+    <div class="inputRow">
+      <input id="securityPinInput" type="password" placeholder="Security PIN" />
+      <button id="securityLoginBtn">Unlock Security</button>
+    </div>
+    <div id="securityTools" class="hidden">
+      <textarea id="securityNoteInput" placeholder="Add threat, fraud, chargeback, or suspicious activity note..."></textarea>
+      <button id="securityNoteBtn">Log Security Note</button>
+      <button id="simulateThreatBtn" class="danger">Simulate Threat Alert</button>
+      <div id="securityLog" class="list"></div>
     </div>
   </section>
 
