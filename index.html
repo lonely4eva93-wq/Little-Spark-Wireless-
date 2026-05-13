@@ -19,7 +19,7 @@
       <p class="tagline">A premium demo for plans, support, owner tools, AI chat, lead capture, security operations, cash-out tracking, and future eSIM provider hooks.</p>
       <div class="actions">
         <a href="#plans" class="button primary">View Plans</a>
-        <a href="#signup" class="button ghost">Join Waitlist</a>
+        <a href="#founding" class="button ghost">Become a Founder</a>
       </div>
     </div>
     <div class="signalCard">
@@ -32,6 +32,26 @@
 </header>
 
 <main class="container">
+  <section id="founding" class="card split">
+    <div>
+      <p class="eyebrow">Founding Member Access</p>
+      <h2>Join the first Spark circle.</h2>
+      <p>Get early access, launch updates, and first shot at founder pricing when real provider activation opens.</p>
+    </div>
+    <form id="founderForm" class="form">
+      <input id="founderNameInput" type="text" placeholder="Founder name" required />
+      <input id="founderEmailInput" type="email" placeholder="Founder email" required />
+      <input id="founderPhoneInput" type="tel" placeholder="Founder phone" />
+      <select id="founderInterestInput">
+        <option value="Early wireless plan">Early wireless plan</option>
+        <option value="AI phone concierge">AI phone concierge</option>
+        <option value="Business/family lines">Business/family lines</option>
+        <option value="Investor/partner">Investor/partner</option>
+      </select>
+      <button type="submit">Join Founder Waitlist</button>
+    </form>
+  </section>
+
   <section id="plans" class="grid three">
     <article class="card plan">
       <h2>Spark Start</h2>
@@ -94,6 +114,7 @@
     <div id="ownerTools" class="ownerTools hidden">
       <div class="stats">
         <div><strong id="userCount">0</strong><span>Users</span></div>
+        <div><strong id="founderCount">0</strong><span>Founders</span></div>
         <div><strong id="messageCount">0</strong><span>Messages</span></div>
         <div><strong id="ticketCount">0</strong><span>Tickets</span></div>
         <div><strong id="selectedPlan">None</strong><span>Selected Plan</span></div>
@@ -114,10 +135,13 @@
           <h3>Owner Actions</h3>
           <button id="saveLeadBtn">Save Lead</button>
           <button id="simulateSaleBtn">Simulate Plan Sale</button>
+          <button id="exportFoundersBtn">Export Founders CSV</button>
           <button id="clearMessagesBtn">Clear Messages</button>
           <button id="clearAllBtn" class="danger">Factory Reset Demo</button>
         </div>
       </div>
+      <h3>Founder Leads</h3>
+      <div id="founderList" class="list"></div>
     </div>
   </section>
 
