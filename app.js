@@ -10,6 +10,14 @@ const ownerTools = $('ownerTools');
 const clearMessagesBtn = $('clearMessagesBtn');
 const clearAllBtn = $('clearAllBtn');
 const signupForm = $('signupForm');
+const founderForm = $('founderForm');
+const founderNameInput = $('founderNameInput');
+const founderEmailInput = $('founderEmailInput');
+const founderPhoneInput = $('founderPhoneInput');
+const founderInterestInput = $('founderInterestInput');
+const founderCount = $('founderCount');
+const founderList = $('founderList');
+const exportFoundersBtn = $('exportFoundersBtn');
 const ticketInput = $('ticketInput');
 const ticketBtn = $('ticketBtn');
 const ticketList = $('ticketList');
@@ -41,6 +49,7 @@ const HOUSE_FEE_RATE = 0.12;
 const keys = {
   messages: 'littleSparkMessages',
   users: 'littleSparkUsers',
+  founders: 'littleSparkFounders',
   tickets: 'littleSparkTickets',
   plan: 'littleSparkSelectedPlan',
   planPrice: 'littleSparkSelectedPlanPrice',
@@ -63,6 +72,10 @@ function money(value) {
   return `$${Number(value || 0).toFixed(2)}`;
 }
 
+function csvEscape(value) {
+  return `"${String(value || '').replaceAll('"', '""')}"`;
+}
+
 function addMessage(text, who = 'user') {
   const div = document.createElement('div');
   div.className = `bubble ${who}`;
@@ -73,12 +86,13 @@ function addMessage(text, who = 'user') {
 
 function botReply(text) {
   const lower = text.toLowerCase();
-  let reply = 'Spark heard you. This prototype can save messages, accounts, tickets, selected plans, sales, cash-outs, and security notes locally.';
+  let reply = 'Spark heard you. This prototype can save messages, accounts, founders, tickets, selected plans, sales, cash-outs, and security notes locally.';
 
   if (lower.includes('price') || lower.includes('plan')) reply = 'Plans start at $25/mo in this demo. Spark Plus is the featured middle option.';
   if (lower.includes('esim')) reply = 'eSIM activation needs a real provider API and backend keys. The hook section is ready for that next.';
   if (lower.includes('help') || lower.includes('support')) reply = 'Create a support ticket on the right and it will save locally for the owner dashboard.';
   if (lower.includes('cash') || lower.includes('payout')) reply = 'The owner panel can now record demo cash-out requests and track total requested payout.';
+  if (lower.includes('founder') || lower.includes('waitlist')) reply = 'Founder leads are captured locally and can be exported as CSV from the owner panel.';
 
   setTimeout(() => {
     addMessage(reply, 'bot');
@@ -93,6 +107,18 @@ function loadMessages() {
   messages.innerHTML = '';
   const saved = read(keys.messages, []);
   saved.forEach(msg => addMessage(msg.text || msg, msg.who || 'user'));
+}
+
+function refreshFounders() {
+  const founders = read(keys.founders, []);
+  if (!founderList) return;
+  founderList.innerHTML = '';
+  founders.forEach((founder, index) => {
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.textContent = `#${index + 1} ${founder.name} - ${founder.email} - ${founder.interest}`;
+    founderList.appendChild(div);
+  });
 }
 
 function refreshTickets() {
@@ -130,6 +156,7 @@ function refreshSecurityLog() {
 
 function refreshStats() {
   const users = read(keys.users, []);
+  const founders = read(keys.founders, []);
   const savedMessages = read(keys.messages, []);
   const tickets = read(keys.tickets, []);
   const sales = read(keys.sales, []);
@@ -141,6 +168,7 @@ function refreshStats() {
   const highRiskCount = securityEntries.filter(entry => entry.level === 'HIGH').length;
 
   userCount.textContent = users.length;
+  if (founderCount) founderCount.textContent = founders.length;
   messageCount.textContent = savedMessages.length;
   ticketCount.textContent = tickets.length;
   selectedPlan.textContent = localStorage.getItem(keys.plan) || 'None';
@@ -176,6 +204,23 @@ signupForm.addEventListener('submit', (event) => {
   refreshStats();
 });
 
+founderForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const founders = read(keys.founders, []);
+  founders.push({
+    name: founderNameInput.value,
+    email: founderEmailInput.value,
+    phone: founderPhoneInput.value,
+    interest: founderInterestInput.value,
+    at: new Date().toISOString()
+  });
+  write(keys.founders, founders);
+  founderForm.reset();
+  alert('Founder waitlist saved locally ⚡');
+  refreshFounders();
+  refreshStats();
+});
+
 document.querySelectorAll('.choosePlan').forEach(button => {
   button.addEventListener('click', () => {
     localStorage.setItem(keys.plan, button.dataset.plan);
@@ -200,6 +245,7 @@ ownerLoginBtn.addEventListener('click', () => {
   if (ownerPinInput.value === OWNER_PIN) {
     ownerTools.classList.remove('hidden');
     refreshCashouts();
+    refreshFounders();
     refreshStats();
     alert('Owner access granted ⚡');
   } else {
@@ -220,6 +266,24 @@ simulateSaleBtn.addEventListener('click', () => {
   write(keys.sales, sales);
   alert(`${plan} demo sale recorded for ${money(amount)} ⚡`);
   refreshStats();
+});
+
+exportFoundersBtn.addEventListener('click', () => {
+  const founders = read(keys.founders, []);
+  if (!founders.length) {
+    alert('No founder leads to export yet');
+    return;
+  }
+  const header = ['name', 'email', 'phone', 'interest', 'created_at'];
+  const rows = founders.map(founder => [founder.name, founder.email, founder.phone, founder.interest, founder.at].map(csvEscape).join(','));
+  const csv = [header.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'little-spark-founder-leads.csv';
+  link.click();
+  URL.revokeObjectURL(url);
 });
 
 cashoutBtn.addEventListener('click', () => {
@@ -280,6 +344,7 @@ clearAllBtn.addEventListener('click', () => {
   loadMessages();
   refreshTickets();
   refreshCashouts();
+  refreshFounders();
   refreshSecurityLog();
   refreshStats();
   alert('Demo reset complete');
@@ -288,5 +353,6 @@ clearAllBtn.addEventListener('click', () => {
 loadMessages();
 refreshTickets();
 refreshCashouts();
+refreshFounders();
 refreshSecurityLog();
 refreshStats();
