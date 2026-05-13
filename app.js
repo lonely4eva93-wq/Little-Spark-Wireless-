@@ -41,10 +41,16 @@ const securityNoteInput = $('securityNoteInput');
 const securityNoteBtn = $('securityNoteBtn');
 const simulateThreatBtn = $('simulateThreatBtn');
 const securityLog = $('securityLog');
+const shareBtn = $('shareBtn');
+const installBtn = $('installBtn');
+const installHint = $('installHint');
+const referralLinkInput = $('referralLinkInput');
+const copyReferralBtn = $('copyReferralBtn');
 
 const OWNER_PIN = '123456';
 const SECURITY_PIN = '999000';
 const HOUSE_FEE_RATE = 0.12;
+let deferredInstallPrompt = null;
 
 const keys = {
   messages: 'littleSparkMessages',
@@ -56,25 +62,30 @@ const keys = {
   lead: 'littleSparkLead',
   sales: 'littleSparkSales',
   cashouts: 'littleSparkCashouts',
-  security: 'littleSparkSecurityLog'
+  security: 'littleSparkSecurityLog',
+  referral: 'littleSparkReferralCode'
 };
 
 function read(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; }
   catch { return fallback; }
 }
-
-function write(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+function write(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+function money(value) { return `$${Number(value || 0).toFixed(2)}`; }
+function csvEscape(value) { return `"${String(value || '').replaceAll('"', '""')}"`; }
+function sparkCode() { return Math.random().toString(36).slice(2, 8).toUpperCase(); }
+function getReferralCode() {
+  let code = localStorage.getItem(keys.referral);
+  if (!code) { code = `SPARK-${sparkCode()}`; localStorage.setItem(keys.referral, code); }
+  return code;
 }
-
-function money(value) {
-  return `$${Number(value || 0).toFixed(2)}`;
+function getReferralLink() {
+  const url = new URL(window.location.href);
+  url.hash = '';
+  url.searchParams.set('ref', getReferralCode());
+  return url.toString();
 }
-
-function csvEscape(value) {
-  return `"${String(value || '').replaceAll('"', '""')}"`;
-}
+function toast(text) { alert(text); }
 
 function addMessage(text, who = 'user') {
   const div = document.createElement('div');
@@ -87,13 +98,11 @@ function addMessage(text, who = 'user') {
 function botReply(text) {
   const lower = text.toLowerCase();
   let reply = 'Spark heard you. This prototype can save messages, accounts, founders, tickets, selected plans, sales, cash-outs, and security notes locally.';
-
   if (lower.includes('price') || lower.includes('plan')) reply = 'Plans start at $25/mo in this demo. Spark Plus is the featured middle option.';
-  if (lower.includes('esim')) reply = 'eSIM activation needs a real provider API and backend keys. The hook section is ready for that next.';
+  if (lower.includes('esim') || lower.includes('activate')) reply = 'The activation simulator can model eSIM readiness, but real eSIM activation needs a provider API and backend keys.';
   if (lower.includes('help') || lower.includes('support')) reply = 'Create a support ticket on the right and it will save locally for the owner dashboard.';
-  if (lower.includes('cash') || lower.includes('payout')) reply = 'The owner panel can now record demo cash-out requests and track total requested payout.';
-  if (lower.includes('founder') || lower.includes('waitlist')) reply = 'Founder leads are captured locally and can be exported as CSV from the owner panel.';
-
+  if (lower.includes('cash') || lower.includes('payout')) reply = 'The owner panel records demo cash-out requests and tracks total requested payout.';
+  if (lower.includes('founder') || lower.includes('waitlist') || lower.includes('referral')) reply = 'Founder leads and referral links are captured locally. The next real step is cloud storage.';
   setTimeout(() => {
     addMessage(reply, 'bot');
     const saved = read(keys.messages, []);
@@ -108,7 +117,14 @@ function loadMessages() {
   const saved = read(keys.messages, []);
   saved.forEach(msg => addMessage(msg.text || msg, msg.who || 'user'));
 }
-
+function scoreFounder(founder) {
+  let score = 30;
+  if (founder.phone) score += 20;
+  if (founder.interest === 'Investor/partner') score += 35;
+  if (founder.interest === 'Business/family lines') score += 25;
+  if (founder.email && founder.email.includes('@')) score += 15;
+  return Math.min(score, 100);
+}
 function refreshFounders() {
   const founders = read(keys.founders, []);
   if (!founderList) return;
@@ -116,11 +132,10 @@ function refreshFounders() {
   founders.forEach((founder, index) => {
     const div = document.createElement('div');
     div.className = 'item';
-    div.textContent = `#${index + 1} ${founder.name} - ${founder.email} - ${founder.interest}`;
+    div.textContent = `#${index + 1} ${founder.name} - ${founder.email} - ${founder.interest} - Lead Score ${scoreFounder(founder)}`;
     founderList.appendChild(div);
   });
 }
-
 function refreshTickets() {
   const tickets = read(keys.tickets, []);
   ticketList.innerHTML = '';
@@ -131,7 +146,6 @@ function refreshTickets() {
     ticketList.appendChild(div);
   });
 }
-
 function refreshCashouts() {
   const cashouts = read(keys.cashouts, []);
   cashoutList.innerHTML = '';
@@ -142,7 +156,6 @@ function refreshCashouts() {
     cashoutList.appendChild(div);
   });
 }
-
 function refreshSecurityLog() {
   const logs = read(keys.security, []);
   securityLog.innerHTML = '';
@@ -153,7 +166,7 @@ function refreshSecurityLog() {
     securityLog.appendChild(div);
   });
 }
-
+function refreshReferral() { if (referralLinkInput) referralLinkInput.value = getReferralLink(); }
 function refreshStats() {
   const users = read(keys.users, []);
   const founders = read(keys.founders, []);
@@ -166,7 +179,6 @@ function refreshStats() {
   const fees = revenue * HOUSE_FEE_RATE;
   const requestedCashout = cashouts.reduce((sum, cashout) => sum + Number(cashout.amount || 0), 0);
   const highRiskCount = securityEntries.filter(entry => entry.level === 'HIGH').length;
-
   userCount.textContent = users.length;
   if (founderCount) founderCount.textContent = founders.length;
   messageCount.textContent = savedMessages.length;
@@ -189,47 +201,34 @@ sendBtn.addEventListener('click', () => {
   refreshStats();
   botReply(text);
 });
-
-messageInput.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') sendBtn.click();
-});
-
+messageInput.addEventListener('keydown', (event) => { if (event.key === 'Enter') sendBtn.click(); });
 signupForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const users = read(keys.users, []);
-  users.push({ name: $('nameInput').value, email: $('emailInput').value, phone: $('phoneInput').value, at: new Date().toISOString() });
+  users.push({ name: $('nameInput').value, email: $('emailInput').value, phone: $('phoneInput').value, ref: getReferralCode(), at: new Date().toISOString() });
   write(keys.users, users);
   signupForm.reset();
-  alert('Demo account saved locally ⚡');
+  toast('Demo account saved locally ⚡');
   refreshStats();
 });
-
 founderForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const founders = read(keys.founders, []);
-  founders.push({
-    name: founderNameInput.value,
-    email: founderEmailInput.value,
-    phone: founderPhoneInput.value,
-    interest: founderInterestInput.value,
-    at: new Date().toISOString()
-  });
+  founders.push({ name: founderNameInput.value, email: founderEmailInput.value, phone: founderPhoneInput.value, interest: founderInterestInput.value, ref: getReferralCode(), at: new Date().toISOString() });
   write(keys.founders, founders);
   founderForm.reset();
-  alert('Founder waitlist saved locally ⚡');
+  toast('Founder waitlist saved locally ⚡');
   refreshFounders();
   refreshStats();
 });
-
 document.querySelectorAll('.choosePlan').forEach(button => {
   button.addEventListener('click', () => {
     localStorage.setItem(keys.plan, button.dataset.plan);
     localStorage.setItem(keys.planPrice, button.dataset.price || '0');
-    alert(`${button.dataset.plan} selected`);
+    toast(`${button.dataset.plan} selected`);
     refreshStats();
   });
 });
-
 ticketBtn.addEventListener('click', () => {
   const text = ticketInput.value.trim();
   if (!text) return;
@@ -240,79 +239,49 @@ ticketBtn.addEventListener('click', () => {
   refreshTickets();
   refreshStats();
 });
-
 ownerLoginBtn.addEventListener('click', () => {
   if (ownerPinInput.value === OWNER_PIN) {
     ownerTools.classList.remove('hidden');
-    refreshCashouts();
-    refreshFounders();
-    refreshStats();
-    alert('Owner access granted ⚡');
-  } else {
-    alert('Incorrect PIN');
-  }
+    refreshCashouts(); refreshFounders(); refreshStats();
+    toast('Owner access granted ⚡');
+  } else toast('Incorrect PIN');
 });
-
-saveLeadBtn.addEventListener('click', () => {
-  localStorage.setItem(keys.lead, JSON.stringify({ status: 'Interested User', at: new Date().toISOString() }));
-  alert('Lead saved locally ⚡');
-});
-
+saveLeadBtn.addEventListener('click', () => { localStorage.setItem(keys.lead, JSON.stringify({ status: 'Interested User', at: new Date().toISOString() })); toast('Lead saved locally ⚡'); });
 simulateSaleBtn.addEventListener('click', () => {
   const plan = localStorage.getItem(keys.plan) || 'Spark Plus';
   const amount = Number(localStorage.getItem(keys.planPrice) || 45);
   const sales = read(keys.sales, []);
   sales.push({ plan, amount, at: new Date().toISOString() });
   write(keys.sales, sales);
-  alert(`${plan} demo sale recorded for ${money(amount)} ⚡`);
+  toast(`${plan} demo sale recorded for ${money(amount)} ⚡`);
   refreshStats();
 });
-
 exportFoundersBtn.addEventListener('click', () => {
   const founders = read(keys.founders, []);
-  if (!founders.length) {
-    alert('No founder leads to export yet');
-    return;
-  }
-  const header = ['name', 'email', 'phone', 'interest', 'created_at'];
-  const rows = founders.map(founder => [founder.name, founder.email, founder.phone, founder.interest, founder.at].map(csvEscape).join(','));
+  if (!founders.length) return toast('No founder leads to export yet');
+  const header = ['name', 'email', 'phone', 'interest', 'lead_score', 'referral', 'created_at'];
+  const rows = founders.map(founder => [founder.name, founder.email, founder.phone, founder.interest, scoreFounder(founder), founder.ref, founder.at].map(csvEscape).join(','));
   const csv = [header.join(','), ...rows].join('\n');
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  link.href = url;
-  link.download = 'little-spark-founder-leads.csv';
-  link.click();
+  link.href = url; link.download = 'little-spark-founder-leads.csv'; link.click();
   URL.revokeObjectURL(url);
 });
-
 cashoutBtn.addEventListener('click', () => {
   const amount = Number(cashoutAmountInput.value);
   const method = cashoutMethodInput.value.trim() || 'Manual Review';
-  if (!amount || amount < 1) {
-    alert('Enter a cash-out amount of at least $1');
-    return;
-  }
+  if (!amount || amount < 1) return toast('Enter a cash-out amount of at least $1');
   const cashouts = read(keys.cashouts, []);
   cashouts.push({ amount, method, status: 'pending demo review', at: new Date().toISOString() });
   write(keys.cashouts, cashouts);
-  cashoutAmountInput.value = '';
-  cashoutMethodInput.value = '';
-  refreshCashouts();
-  refreshStats();
+  cashoutAmountInput.value = ''; cashoutMethodInput.value = '';
+  refreshCashouts(); refreshStats();
 });
-
 securityLoginBtn.addEventListener('click', () => {
-  if (securityPinInput.value === SECURITY_PIN) {
-    securityTools.classList.remove('hidden');
-    refreshSecurityLog();
-    refreshStats();
-    alert('Security access granted 🛡️');
-  } else {
-    alert('Incorrect security PIN');
-  }
+  if (securityPinInput.value === SECURITY_PIN) { securityTools.classList.remove('hidden'); refreshSecurityLog(); refreshStats(); toast('Security access granted 🛡️'); }
+  else toast('Incorrect security PIN');
 });
-
 securityNoteBtn.addEventListener('click', () => {
   const text = securityNoteInput.value.trim();
   if (!text) return;
@@ -320,39 +289,35 @@ securityNoteBtn.addEventListener('click', () => {
   logs.push({ level: 'NOTE', text, at: new Date().toISOString() });
   write(keys.security, logs);
   securityNoteInput.value = '';
-  refreshSecurityLog();
-  refreshStats();
+  refreshSecurityLog(); refreshStats();
 });
-
 simulateThreatBtn.addEventListener('click', () => {
   const logs = read(keys.security, []);
   logs.push({ level: 'HIGH', text: 'Simulated threat alert: suspicious activity flagged for review.', at: new Date().toISOString() });
   write(keys.security, logs);
-  refreshSecurityLog();
-  refreshStats();
-  alert('Threat alert logged for demo review');
+  refreshSecurityLog(); refreshStats();
+  toast('Threat alert logged for demo review');
 });
+clearMessagesBtn.addEventListener('click', () => { localStorage.removeItem(keys.messages); loadMessages(); refreshStats(); });
+clearAllBtn.addEventListener('click', () => { Object.values(keys).forEach(key => localStorage.removeItem(key)); loadMessages(); refreshTickets(); refreshCashouts(); refreshFounders(); refreshSecurityLog(); refreshReferral(); refreshStats(); toast('Demo reset complete'); });
 
-clearMessagesBtn.addEventListener('click', () => {
-  localStorage.removeItem(keys.messages);
-  loadMessages();
-  refreshStats();
+if (shareBtn) shareBtn.addEventListener('click', async () => {
+  const shareData = { title: 'Little Spark Wireless', text: 'Join the first Spark circle for AI-assisted wireless service.', url: getReferralLink() };
+  if (navigator.share) await navigator.share(shareData);
+  else { await navigator.clipboard.writeText(shareData.url); toast('Invite link copied ⚡'); }
 });
-
-clearAllBtn.addEventListener('click', () => {
-  Object.values(keys).forEach(key => localStorage.removeItem(key));
-  loadMessages();
-  refreshTickets();
-  refreshCashouts();
-  refreshFounders();
-  refreshSecurityLog();
-  refreshStats();
-  alert('Demo reset complete');
+if (copyReferralBtn) copyReferralBtn.addEventListener('click', async () => { await navigator.clipboard.writeText(getReferralLink()); toast('Referral invite copied ⚡'); });
+window.addEventListener('beforeinstallprompt', (event) => { event.preventDefault(); deferredInstallPrompt = event; if (installHint) installHint.textContent = 'Install is ready on supported browsers.'; });
+if (installBtn) installBtn.addEventListener('click', async () => {
+  if (deferredInstallPrompt) { deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; }
+  else toast('On iPhone: tap Share, then Add to Home Screen. On Android: use browser install if available.');
 });
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 
 loadMessages();
 refreshTickets();
 refreshCashouts();
 refreshFounders();
 refreshSecurityLog();
+refreshReferral();
 refreshStats();
