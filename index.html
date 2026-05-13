@@ -6,6 +6,8 @@
 <meta name="theme-color" content="#050816" />
 <meta name="description" content="Little Spark Wireless is an AI-assisted wireless concierge prototype for founder waitlists, support, owner tools, and future eSIM provider hooks." />
 <title>Little Spark Wireless</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -27,6 +29,7 @@
         <a href="#founding" class="button ghost">Become a Founder</a>
         <button id="installBtn" type="button" class="ghostButton">Install App</button>
       </div>
+      <p id="installHint" class="fineprint"></p>
     </div>
     <div class="signalCard">
       <div class="orb">📡</div>
@@ -42,6 +45,16 @@
     <article class="card miniCard"><strong>Founder Funnel</strong><span>Capture leads before provider approval.</span></article>
     <article class="card miniCard"><strong>Owner Ops</strong><span>Track demo sales, fees, tickets, and cash-out requests.</span></article>
     <article class="card miniCard"><strong>Provider Ready</strong><span>Prepared for eSIM, payments, fraud, and backend auth.</span></article>
+  </section>
+
+  <section class="card referralCard">
+    <p class="eyebrow">Growth Engine</p>
+    <h2>Invite friends. Build the first signal circle.</h2>
+    <p>Your demo referral link is generated on-device. Share it anywhere and use it to test a future rewards system.</p>
+    <div class="inputRow">
+      <input id="referralLinkInput" readonly value="Generating referral link..." />
+      <button id="copyReferralBtn" type="button">Copy Invite</button>
+    </div>
   </section>
 
   <section id="founding" class="card split">
@@ -91,8 +104,8 @@
     <h2>What makes this ready for real money next?</h2>
     <div class="checkGrid">
       <div>✅ Landing page</div><div>✅ Founder leads</div><div>✅ Demo sales tracker</div><div>✅ Owner panel</div>
-      <div>✅ Support tickets</div><div>✅ Security notes</div><div>⬜ Stripe checkout</div><div>⬜ eSIM provider API</div>
-      <div>⬜ Firebase/Supabase login</div><div>⬜ Real payouts</div><div>⬜ Terms/privacy</div><div>⬜ Compliance review</div>
+      <div>✅ Support tickets</div><div>✅ Security notes</div><div>✅ PWA shell</div><div>✅ Referral link</div>
+      <div>⬜ Stripe checkout</div><div>⬜ eSIM provider API</div><div>⬜ Terms/privacy</div><div>⬜ Compliance review</div>
     </div>
   </section>
 
