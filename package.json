@@ -1,0 +1,15 @@
+{
+  "name": "little-spark-wireless",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Little Spark Wireless prototype site deployed with Node 24 and GitHub Pages.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "devDependencies": {}
+}
