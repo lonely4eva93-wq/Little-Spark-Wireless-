@@ -1,0 +1,20 @@
+{
+  "name": "Little Spark Wireless",
+  "short_name": "Little Spark",
+  "description": "AI-assisted wireless concierge prototype for founder leads, plans, support, owner tools, and eSIM provider hooks.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#050816",
+  "theme_color": "#050816",
+  "orientation": "portrait-primary",
+  "categories": ["business", "utilities", "productivity"],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
