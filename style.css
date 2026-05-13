@@ -1,0 +1,64 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+.tagline {
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.messages {
+  min-height: 150px;
+  background: #1e293b;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow-y: auto;
+}
+
+.inputRow {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  background: #22c55e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
