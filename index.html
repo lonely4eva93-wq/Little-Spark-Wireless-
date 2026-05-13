@@ -7,21 +7,84 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="container">
-  <h1>⚡ Little Spark Wireless</h1>
-  <p class="tagline">AI powered wireless dreams with signal and soul.</p>
-
-  <div class="card">
-    <h2>Live Spark Chat</h2>
-    <div id="messages" class="messages"></div>
-
-    <div class="inputRow">
-      <input id="messageInput" type="text" placeholder="Send a spark..." />
-      <button id="sendBtn">Send</button>
+<header class="hero">
+  <nav class="nav">
+    <div class="brand">⚡ Little Spark Wireless</div>
+    <div class="pill">Prototype v1</div>
+  </nav>
+  <section class="heroGrid">
+    <div>
+      <p class="eyebrow">AI assisted wireless concierge</p>
+      <h1>Phone service with a little spark.</h1>
+      <p class="tagline">A premium demo for plans, support, owner tools, AI chat, lead capture, and future eSIM provider hooks.</p>
+      <div class="actions">
+        <a href="#plans" class="button primary">View Plans</a>
+        <a href="#signup" class="button ghost">Join Waitlist</a>
+      </div>
     </div>
-  </div>
+    <div class="signalCard">
+      <div class="orb">📡</div>
+      <h2>Signal Status</h2>
+      <p id="signalStatus">Prototype Online</p>
+      <small>Provider API: not connected yet</small>
+    </div>
+  </section>
+</header>
 
-  <div class="card">
+<main class="container">
+  <section id="plans" class="grid three">
+    <article class="card plan">
+      <h2>Spark Start</h2>
+      <p class="price">$25/mo</p>
+      <p>Starter talk, text, and data concept plan.</p>
+      <button class="choosePlan" data-plan="Spark Start">Choose</button>
+    </article>
+    <article class="card plan featured">
+      <h2>Spark Plus</h2>
+      <p class="price">$45/mo</p>
+      <p>Premium support, AI setup guide, and future eSIM activation.</p>
+      <button class="choosePlan" data-plan="Spark Plus">Choose</button>
+    </article>
+    <article class="card plan">
+      <h2>Spark Max</h2>
+      <p class="price">$65/mo</p>
+      <p>Power-user concept plan with concierge support.</p>
+      <button class="choosePlan" data-plan="Spark Max">Choose</button>
+    </article>
+  </section>
+
+  <section id="signup" class="card split">
+    <div>
+      <h2>Create Demo Account</h2>
+      <p>Saved locally for prototype testing. Production needs backend auth.</p>
+    </div>
+    <form id="signupForm" class="form">
+      <input id="nameInput" type="text" placeholder="Name" required />
+      <input id="emailInput" type="email" placeholder="Email" required />
+      <input id="phoneInput" type="tel" placeholder="Phone" />
+      <button type="submit">Save Account</button>
+    </form>
+  </section>
+
+  <section class="grid two">
+    <div class="card">
+      <h2>Live Spark Chat</h2>
+      <div id="messages" class="messages"></div>
+      <div class="inputRow">
+        <input id="messageInput" type="text" placeholder="Ask Little Spark..." />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Support Ticket</h2>
+      <textarea id="ticketInput" placeholder="Describe the issue..."></textarea>
+      <button id="ticketBtn">Create Ticket</button>
+      <div id="ticketList" class="list"></div>
+    </div>
+  </section>
+
+  <section class="card">
     <h2>Owner Panel</h2>
     <p>Status: Prototype Online</p>
     <div class="inputRow">
@@ -29,12 +92,23 @@
       <button id="ownerLoginBtn">Unlock</button>
     </div>
     <div id="ownerTools" class="ownerTools hidden">
-      <p>Owner mode unlocked.</p>
+      <div class="stats">
+        <div><strong id="userCount">0</strong><span>Users</span></div>
+        <div><strong id="messageCount">0</strong><span>Messages</span></div>
+        <div><strong id="ticketCount">0</strong><span>Tickets</span></div>
+        <div><strong id="selectedPlan">None</strong><span>Selected Plan</span></div>
+      </div>
       <button id="saveLeadBtn">Save Lead</button>
       <button id="clearMessagesBtn">Clear Messages</button>
+      <button id="clearAllBtn" class="danger">Factory Reset Demo</button>
     </div>
-  </div>
-</div>
+  </section>
+
+  <section class="card notes">
+    <h2>Provider API Hooks</h2>
+    <p>Ready placeholders for eSIM provider, payment processor, fraud checks, and owner cash-out dashboard. These require backend keys and real vendors before launch.</p>
+  </section>
+</main>
 
 <script src="app.js"></script>
 </body>
