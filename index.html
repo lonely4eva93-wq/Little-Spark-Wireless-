@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#050816" />
+<meta name="description" content="Little Spark Wireless is an AI-assisted wireless concierge prototype for founder waitlists, support, owner tools, and future eSIM provider hooks." />
 <title>Little Spark Wireless</title>
 <link rel="stylesheet" href="style.css" />
 </head>
@@ -10,33 +12,44 @@
 <header class="hero">
   <nav class="nav">
     <div class="brand">⚡ Little Spark Wireless</div>
-    <div class="pill">Prototype v1</div>
+    <div class="actions miniActions">
+      <button id="shareBtn" type="button">Share</button>
+      <a href="#founding" class="button ghost">Join</a>
+    </div>
   </nav>
   <section class="heroGrid">
     <div>
       <p class="eyebrow">AI assisted wireless concierge</p>
       <h1>Phone service with a little spark.</h1>
-      <p class="tagline">A premium demo for plans, support, owner tools, AI chat, lead capture, security operations, cash-out tracking, and future eSIM provider hooks.</p>
+      <p class="tagline">A premium launch demo for founder leads, wireless plans, support, owner tools, AI chat, security operations, cash-out tracking, and future eSIM provider hooks.</p>
       <div class="actions">
         <a href="#plans" class="button primary">View Plans</a>
         <a href="#founding" class="button ghost">Become a Founder</a>
+        <button id="installBtn" type="button" class="ghostButton">Install App</button>
       </div>
     </div>
     <div class="signalCard">
       <div class="orb">📡</div>
       <h2>Signal Status</h2>
       <p id="signalStatus">Prototype Online</p>
-      <small>Provider API: not connected yet</small>
+      <small>Provider API: ready for real vendor keys</small>
     </div>
   </section>
 </header>
 
 <main class="container">
+  <section class="grid three launchStats">
+    <article class="card miniCard"><strong>Founder Funnel</strong><span>Capture leads before provider approval.</span></article>
+    <article class="card miniCard"><strong>Owner Ops</strong><span>Track demo sales, fees, tickets, and cash-out requests.</span></article>
+    <article class="card miniCard"><strong>Provider Ready</strong><span>Prepared for eSIM, payments, fraud, and backend auth.</span></article>
+  </section>
+
   <section id="founding" class="card split">
     <div>
       <p class="eyebrow">Founding Member Access</p>
       <h2>Join the first Spark circle.</h2>
       <p>Get early access, launch updates, and first shot at founder pricing when real provider activation opens.</p>
+      <p class="fineprint">Prototype note: this saves locally for demo testing. Real launch needs backend storage and compliance review.</p>
     </div>
     <form id="founderForm" class="form">
       <input id="founderNameInput" type="text" placeholder="Founder name" required />
@@ -71,6 +84,16 @@
       <p>Power-user concept plan with concierge support.</p>
       <button class="choosePlan" data-plan="Spark Max" data-price="65">Choose</button>
     </article>
+  </section>
+
+  <section class="card roadmap">
+    <p class="eyebrow">Launch Roadmap</p>
+    <h2>What makes this ready for real money next?</h2>
+    <div class="checkGrid">
+      <div>✅ Landing page</div><div>✅ Founder leads</div><div>✅ Demo sales tracker</div><div>✅ Owner panel</div>
+      <div>✅ Support tickets</div><div>✅ Security notes</div><div>⬜ Stripe checkout</div><div>⬜ eSIM provider API</div>
+      <div>⬜ Firebase/Supabase login</div><div>⬜ Real payouts</div><div>⬜ Terms/privacy</div><div>⬜ Compliance review</div>
+    </div>
   </section>
 
   <section id="signup" class="card split">
