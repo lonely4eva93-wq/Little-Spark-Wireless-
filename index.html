@@ -57,6 +57,23 @@
     </div>
   </section>
 
+  <section class="grid two">
+    <article class="card qrCard">
+      <p class="eyebrow">QR Invite Card</p>
+      <h2>Scan the Spark.</h2>
+      <div id="qrBox" class="qrBox">QR</div>
+      <p class="fineprint">A scannable-style demo card for flyers, screenshots, and quick sharing.</p>
+      <button id="downloadInviteBtn" type="button">Download Invite Card</button>
+    </article>
+    <article class="card activationCard">
+      <p class="eyebrow">Activation Simulator</p>
+      <h2>eSIM readiness scan.</h2>
+      <div class="scanBar"><span id="scanProgress"></span></div>
+      <p id="activationStatus">Waiting for scan.</p>
+      <button id="scanBtn" type="button">Run Activation Scan</button>
+    </article>
+  </section>
+
   <section id="founding" class="card split">
     <div>
       <p class="eyebrow">Founding Member Access</p>
@@ -79,24 +96,18 @@
   </section>
 
   <section id="plans" class="grid three">
-    <article class="card plan">
-      <h2>Spark Start</h2>
-      <p class="price">$25/mo</p>
-      <p>Starter talk, text, and data concept plan.</p>
-      <button class="choosePlan" data-plan="Spark Start" data-price="25">Choose</button>
-    </article>
-    <article class="card plan featured">
-      <h2>Spark Plus</h2>
-      <p class="price">$45/mo</p>
-      <p>Premium support, AI setup guide, and future eSIM activation.</p>
-      <button class="choosePlan" data-plan="Spark Plus" data-price="45">Choose</button>
-    </article>
-    <article class="card plan">
-      <h2>Spark Max</h2>
-      <p class="price">$65/mo</p>
-      <p>Power-user concept plan with concierge support.</p>
-      <button class="choosePlan" data-plan="Spark Max" data-price="65">Choose</button>
-    </article>
+    <article class="card plan"><h2>Spark Start</h2><p class="price">$25/mo</p><p>Starter talk, text, and data concept plan.</p><button class="choosePlan" data-plan="Spark Start" data-price="25">Choose</button></article>
+    <article class="card plan featured"><h2>Spark Plus</h2><p class="price">$45/mo</p><p>Premium support, AI setup guide, and future eSIM activation.</p><button class="choosePlan" data-plan="Spark Plus" data-price="45">Choose</button></article>
+    <article class="card plan"><h2>Spark Max</h2><p class="price">$65/mo</p><p>Power-user concept plan with concierge support.</p><button class="choosePlan" data-plan="Spark Max" data-price="65">Choose</button></article>
+  </section>
+
+  <section class="card investorCard">
+    <p class="eyebrow">Investor / Provider Snapshot</p>
+    <h2>Why Little Spark can move fast.</h2>
+    <div class="checkGrid">
+      <div>📡 Wireless concierge angle</div><div>🤖 AI support layer</div><div>💸 Subscription-ready pricing</div><div>🌱 Referral growth loop</div>
+      <div>🧾 CSV lead export</div><div>🛡️ Fraud/security console</div><div>📲 Installable PWA shell</div><div>🔌 API hook roadmap</div>
+    </div>
   </section>
 
   <section class="card roadmap">
@@ -105,103 +116,23 @@
     <div class="checkGrid">
       <div>✅ Landing page</div><div>✅ Founder leads</div><div>✅ Demo sales tracker</div><div>✅ Owner panel</div>
       <div>✅ Support tickets</div><div>✅ Security notes</div><div>✅ PWA shell</div><div>✅ Referral link</div>
-      <div>⬜ Stripe checkout</div><div>⬜ eSIM provider API</div><div>⬜ Terms/privacy</div><div>⬜ Compliance review</div>
+      <div>✅ QR invite card</div><div>✅ Activation simulator</div><div>⬜ Terms/privacy</div><div>⬜ Compliance review</div>
     </div>
   </section>
 
   <section id="signup" class="card split">
-    <div>
-      <h2>Create Demo Account</h2>
-      <p>Saved locally for prototype testing. Production needs backend auth.</p>
-    </div>
-    <form id="signupForm" class="form">
-      <input id="nameInput" type="text" placeholder="Name" required />
-      <input id="emailInput" type="email" placeholder="Email" required />
-      <input id="phoneInput" type="tel" placeholder="Phone" />
-      <button type="submit">Save Account</button>
-    </form>
+    <div><h2>Create Demo Account</h2><p>Saved locally for prototype testing. Production needs backend auth.</p></div>
+    <form id="signupForm" class="form"><input id="nameInput" type="text" placeholder="Name" required /><input id="emailInput" type="email" placeholder="Email" required /><input id="phoneInput" type="tel" placeholder="Phone" /><button type="submit">Save Account</button></form>
   </section>
 
-  <section class="grid two">
-    <div class="card">
-      <h2>Live Spark Chat</h2>
-      <div id="messages" class="messages"></div>
-      <div class="inputRow">
-        <input id="messageInput" type="text" placeholder="Ask Little Spark..." />
-        <button id="sendBtn">Send</button>
-      </div>
-    </div>
+  <section class="grid two"><div class="card"><h2>Live Spark Chat</h2><div id="messages" class="messages"></div><div class="inputRow"><input id="messageInput" type="text" placeholder="Ask Little Spark..." /><button id="sendBtn">Send</button></div></div><div class="card"><h2>Support Ticket</h2><textarea id="ticketInput" placeholder="Describe the issue..."></textarea><button id="ticketBtn">Create Ticket</button><div id="ticketList" class="list"></div></div></section>
 
-    <div class="card">
-      <h2>Support Ticket</h2>
-      <textarea id="ticketInput" placeholder="Describe the issue..."></textarea>
-      <button id="ticketBtn">Create Ticket</button>
-      <div id="ticketList" class="list"></div>
-    </div>
-  </section>
+  <section class="card"><h2>Owner Panel</h2><p>Status: Prototype Online</p><div class="inputRow"><input id="ownerPinInput" type="password" placeholder="Owner PIN" /><button id="ownerLoginBtn">Unlock Owner</button></div><div id="ownerTools" class="ownerTools hidden"><div class="stats"><div><strong id="userCount">0</strong><span>Users</span></div><div><strong id="founderCount">0</strong><span>Founders</span></div><div><strong id="messageCount">0</strong><span>Messages</span></div><div><strong id="ticketCount">0</strong><span>Tickets</span></div><div><strong id="selectedPlan">None</strong><span>Selected Plan</span></div><div><strong id="grossRevenue">$0</strong><span>Gross Demo Revenue</span></div><div><strong id="houseFees">$0</strong><span>House Fees</span></div><div><strong id="cashoutTotal">$0</strong><span>Cash-Out Requested</span></div><div><strong id="riskScore">Low</strong><span>Risk Level</span></div></div><div class="grid two"><div><h3>Owner Cash-Out</h3><input id="cashoutAmountInput" type="number" min="1" placeholder="Amount to cash out" /><input id="cashoutMethodInput" type="text" placeholder="Method: PayPal, Cash App, Bank" /><button id="cashoutBtn">Request Cash-Out</button><div id="cashoutList" class="list"></div></div><div><h3>Owner Actions</h3><button id="saveLeadBtn">Save Lead</button><button id="simulateSaleBtn">Simulate Plan Sale</button><button id="exportFoundersBtn">Export Founders CSV</button><button id="clearMessagesBtn">Clear Messages</button><button id="clearAllBtn" class="danger">Factory Reset Demo</button></div></div><h3>Founder Leads</h3><div id="founderList" class="list"></div></div></section>
 
-  <section class="card">
-    <h2>Owner Panel</h2>
-    <p>Status: Prototype Online</p>
-    <div class="inputRow">
-      <input id="ownerPinInput" type="password" placeholder="Owner PIN" />
-      <button id="ownerLoginBtn">Unlock Owner</button>
-    </div>
-    <div id="ownerTools" class="ownerTools hidden">
-      <div class="stats">
-        <div><strong id="userCount">0</strong><span>Users</span></div>
-        <div><strong id="founderCount">0</strong><span>Founders</span></div>
-        <div><strong id="messageCount">0</strong><span>Messages</span></div>
-        <div><strong id="ticketCount">0</strong><span>Tickets</span></div>
-        <div><strong id="selectedPlan">None</strong><span>Selected Plan</span></div>
-        <div><strong id="grossRevenue">$0</strong><span>Gross Demo Revenue</span></div>
-        <div><strong id="houseFees">$0</strong><span>House Fees</span></div>
-        <div><strong id="cashoutTotal">$0</strong><span>Cash-Out Requested</span></div>
-        <div><strong id="riskScore">Low</strong><span>Risk Level</span></div>
-      </div>
-      <div class="grid two">
-        <div>
-          <h3>Owner Cash-Out</h3>
-          <input id="cashoutAmountInput" type="number" min="1" placeholder="Amount to cash out" />
-          <input id="cashoutMethodInput" type="text" placeholder="Method: PayPal, Cash App, Bank" />
-          <button id="cashoutBtn">Request Cash-Out</button>
-          <div id="cashoutList" class="list"></div>
-        </div>
-        <div>
-          <h3>Owner Actions</h3>
-          <button id="saveLeadBtn">Save Lead</button>
-          <button id="simulateSaleBtn">Simulate Plan Sale</button>
-          <button id="exportFoundersBtn">Export Founders CSV</button>
-          <button id="clearMessagesBtn">Clear Messages</button>
-          <button id="clearAllBtn" class="danger">Factory Reset Demo</button>
-        </div>
-      </div>
-      <h3>Founder Leads</h3>
-      <div id="founderList" class="list"></div>
-    </div>
-  </section>
+  <section class="card"><h2>Security Team Login</h2><p>Prototype security console for fraud review, threat notes, and locked account tracking.</p><div class="inputRow"><input id="securityPinInput" type="password" placeholder="Security PIN" /><button id="securityLoginBtn">Unlock Security</button></div><div id="securityTools" class="hidden"><textarea id="securityNoteInput" placeholder="Add threat, fraud, chargeback, or suspicious activity note..."></textarea><button id="securityNoteBtn">Log Security Note</button><button id="simulateThreatBtn" class="danger">Simulate Threat Alert</button><div id="securityLog" class="list"></div></div></section>
 
-  <section class="card">
-    <h2>Security Team Login</h2>
-    <p>Prototype security console for fraud review, threat notes, and locked account tracking.</p>
-    <div class="inputRow">
-      <input id="securityPinInput" type="password" placeholder="Security PIN" />
-      <button id="securityLoginBtn">Unlock Security</button>
-    </div>
-    <div id="securityTools" class="hidden">
-      <textarea id="securityNoteInput" placeholder="Add threat, fraud, chargeback, or suspicious activity note..."></textarea>
-      <button id="securityNoteBtn">Log Security Note</button>
-      <button id="simulateThreatBtn" class="danger">Simulate Threat Alert</button>
-      <div id="securityLog" class="list"></div>
-    </div>
-  </section>
-
-  <section class="card notes">
-    <h2>Provider API Hooks</h2>
-    <p>Ready placeholders for eSIM provider, payment processor, fraud checks, and owner cash-out dashboard. These require backend keys and real vendors before launch.</p>
-  </section>
+  <section class="card notes"><h2>Provider API Hooks</h2><p>Ready placeholders for eSIM provider, payment processor, fraud checks, and owner cash-out dashboard. These require backend keys and real vendors before launch.</p></section>
 </main>
-
 <script src="app.js"></script>
 </body>
 </html>
