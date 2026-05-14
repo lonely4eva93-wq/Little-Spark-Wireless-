@@ -1,15 +1,16 @@
 {
-  "name": "little-spark-wireless",
+  "name": "arc-one-ai",
   "version": "1.0.0",
-  "private": true,
-  "description": "Little Spark Wireless prototype site deployed with Node 24 and GitHub Pages.",
+  "description": "William's custom AI core built from uploaded skill files.",
   "type": "module",
-  "engines": {
-    "node": ">=24"
-  },
+  "main": "server.js",
   "scripts": {
-    "build": "node scripts/build.mjs",
-    "start": "node scripts/serve.mjs"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
-  "devDependencies": {}
+  "dependencies": {
+    "@dotenvx/dotenvx": "latest",
+    "express": "latest",
+    "openai": "latest"
+  }
 }
