@@ -10,11 +10,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3000;
-const model = process.env.OPENAI_MODEL || 'gpt-5.5';
-const systemPrompt = fs.readFileSync(path.join(__dirname, 'system-prompt.md'), 'utf8');
+// Use a widely available default. Override in hosting env with OPENAI_MODEL when needed.
+const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+const promptPath = path.join(__dirname, 'system-prompt.md');
+const systemPrompt = fs.existsSync(promptPath)
+  ? fs.readFileSync(promptPath, 'utf8')
+  : 'You are Little Spark Wireless, a warm practical builder assistant.';
 
 if (!process.env.OPENAI_API_KEY) {
-  console.warn('\n⚠️  Missing OPENAI_API_KEY. Copy .env.example to .env and add your key.\n');
+  console.warn('\n⚠️  Missing OPENAI_API_KEY. Add it in your local .env or hosting environment variables.\n');
 }
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -31,7 +35,14 @@ function cleanMessages(messages = []) {
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const messages = cleanMessages(req.body.messages);
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({
+        error: 'Missing OPENAI_API_KEY on the server.',
+        hint: 'Add OPENAI_API_KEY in your host environment variables, then redeploy.'
+      });
+    }
+
+    const messages = cleanMessages(req.body?.messages);
     const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user');
 
     if (!lastUserMessage) {
@@ -47,11 +58,13 @@ app.post('/api/chat', async (req, res) => {
 
     res.json({ reply: response.output_text || 'I did not get text back from the model.' });
   } catch (error) {
-    console.error(error);
+    console.error('Chat API error:', error);
     const message = error?.message || 'Unknown server error';
-    res.status(500).json({
+    const status = error?.status || 500;
+
+    res.status(status >= 400 && status < 600 ? status : 500).json({
       error: message,
-      hint: 'Check your .env key, billing, model access, and terminal logs.'
+      hint: 'Check OPENAI_API_KEY, billing, model access, and deployment logs.'
     });
   }
 });
@@ -61,6 +74,7 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`\nARC-ONE is awake locally: http://localhost:${port}`);
-  console.log(`Model: ${model}\n`);
+  console.log(`\nLittle Spark Wireless is awake: http://localhost:${port}`);
+  console.log(`Model: ${model}`);
+  console.log(`OpenAI key loaded: ${Boolean(process.env.OPENAI_API_KEY)}\n`);
 });
