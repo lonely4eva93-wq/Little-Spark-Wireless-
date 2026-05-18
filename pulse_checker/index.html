@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phone Pulse Checker</title>
+  <style>
+    body { font-family: system-ui; background:#0b0f14; color:white; padding:20px; }
+    button { padding:14px 18px; border:0; border-radius:12px; font-size:16px; }
+    .card { background:#151c24; padding:16px; border-radius:16px; margin-top:16px; }
+    #bpm { font-size:54px; font-weight:800; }
+    canvas { width:100%; height:160px; background:#05070a; border-radius:12px; }
+    video { display:none; }
+  </style>
+</head>
+<body>
+  <h1>Pulse Checker</h1>
+  <p>Cover the rear camera and flash with your fingertip. Hold still.</p>
+
+  <button id="startBtn">Start Scan</button>
+
+  <div class="card">
+    <div>BPM</div>
+    <div id="bpm">--</div>
+    <div id="quality">Signal: waiting</div>
+  </div>
+
+  <div class="card">
+    <canvas id="graph" width="600" height="180"></canvas>
+  </div>
+
+  <p style="opacity:.7;font-size:13px;">
+    Not a medical device. This estimates pulse only. Blood pressure requires cuff calibration and clinical validation.
+  </p>
+
+  <video id="video" autoplay playsinline></video>
+  <script src="app.js"></script>
+</body>
+</html>
