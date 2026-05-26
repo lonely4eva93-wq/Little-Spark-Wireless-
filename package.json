@@ -1,0 +1,15 @@
+{
+  "name": "little-spark-wireless",
+  "version": "1.0.0",
+  "description": "AI-assisted wireless/eSIM concept",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "^5.0.0"
+  }
+}
